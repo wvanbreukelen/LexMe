@@ -8,17 +8,17 @@ enum class TokenType { OPERATOR, NUMBER, ID, NEWLINE, COMMENT };
 class TokenData
 {
 private:
-	std::string value;
+	const char* value;
 	TokenType type;
 
 	int linePos, lineCharPos;
 	std::string file;
 
 public:
-	TokenData(TokenType type, int linePos, int lineCharPos, std::string file = "") : type(type), linePos(linePos), lineCharPos(lineCharPos), file(file) {};
+	TokenData(TokenType type, int linePos, int lineCharPos, const char* value, std::string file = "") : type(type), linePos(linePos), lineCharPos(lineCharPos), value(value), file(file) {};
 	
 
-	void setValue(std::string &value) {
+	void setValue(const char* value) {
 		this->value = value;
 	}
 
@@ -61,7 +61,7 @@ public:
 			break;
 		}
 
-		os << ']';
+		os << "]\n";
 	}
 };
 
