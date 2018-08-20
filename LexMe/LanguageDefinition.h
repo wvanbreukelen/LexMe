@@ -29,6 +29,7 @@ namespace LanguageDefinition {
 		LINE_BREAK,
 		PARH_LEFT,
 		PARH_RIGHT,
+		PRECISION,
 		WHITESPACE,
 		UNKNOWN
 	};

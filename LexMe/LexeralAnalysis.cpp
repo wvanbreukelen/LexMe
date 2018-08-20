@@ -22,6 +22,7 @@ LexeralAnalysis::LexeralAnalysis() {
 	charClassifiers['"']  = CharacterType::STR_QUOTE;
 	charClassifiers[';']  = CharacterType::LINE_BREAK;
 	charClassifiers[' ']  = CharacterType::WHITESPACE;
+	charClassifiers['.']  = CharacterType::PRECISION;
 
 	for (const auto &op : LanguageDefinition::opMap.getMap()) {
 		std::string opText = op.second.text;
@@ -127,6 +128,10 @@ LanguageDefinition::TokenType LexeralAnalysis::resolveTokenType(LanguageDefiniti
 		}
 		else {
 			return TokenType::ID;
+		}
+	case CharacterType::PRECISION:
+		if (prevTokenType == TokenType::DIGIT) {
+			return TokenType::DIGIT;
 		}
 	default:
 		return TokenType::UNKNOWN;
