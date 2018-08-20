@@ -12,7 +12,7 @@ namespace LanguageDefinition {
 		OPERATOR,
 		ID,
 		NEWLINE,
-		COMMENT,
+		LINE_COMMENT,
 		WHITESPACE,
 		LITERAL,
 		DIGIT,

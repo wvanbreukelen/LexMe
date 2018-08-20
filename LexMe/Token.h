@@ -51,9 +51,6 @@ public:
 		case TokenType::DIGIT:
 			os << "number: " << value;
 			break;
-		case TokenType::COMMENT:
-			os << "comment: " << value;
-			break;
 		case TokenType::STRING:
 			os << "string: " << value;
 			break;

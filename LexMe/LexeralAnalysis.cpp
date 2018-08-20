@@ -63,6 +63,11 @@ TokenList LexeralAnalysis::lexString(const std::string& str) {
 						tokens.push_back(makeToken(prevTokenType, linePos, charPos, op.text));
 					}
 				} else {
+					// If the are dealing with a comment, ignore it.
+					if (prevTokenType == TokenType::LINE_COMMENT) {
+						continue; // I know this is ugly.
+					}
+
 					// If it is a string, we pop off the first character (the semicolon).
 					if (prevTokenType == TokenType::STRING) {
 						tokenValue.erase(0, 1);
@@ -127,6 +132,15 @@ LanguageDefinition::CharacterType LexeralAnalysis::classifyCharacter(const uint8
 }
 
 LanguageDefinition::TokenType LexeralAnalysis::resolveTokenType(LanguageDefinition::CharacterType charType, LanguageDefinition::TokenType prevTokenType) {
+	if (prevTokenType == TokenType::LINE_COMMENT)
+	{
+		if (charType == CharacterType::NEWLINE) {
+			return TokenType::WHITESPACE;
+		} else {
+			return TokenType::LINE_COMMENT;
+		}
+	}
+	
 	if (prevTokenType == TokenType::STRING) {
 		if (charType == CharacterType::STR_QUOTE) {
 			return TokenType::WHITESPACE; // If the string is empty, make it a whitespace.
@@ -142,6 +156,8 @@ LanguageDefinition::TokenType LexeralAnalysis::resolveTokenType(LanguageDefiniti
 	case CharacterType::LINE_BREAK:
 	case CharacterType::NEWLINE:
 		return TokenType::LINE_END;
+	case CharacterType::COMMENT_SINGLE_LINE:
+		return TokenType::LINE_COMMENT;
 	case CharacterType::OPERATOR:
 		return TokenType::OPERATOR;
 	case CharacterType::LETTER:
