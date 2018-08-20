@@ -9,7 +9,7 @@ int main()
 {
 	Lexer lexer;
 
-	std::string str("print: 438.36 * 6 + var; \n 3 * 5;print: \"Hello World\";");
+	std::string str("var = 3;print: 438.36 * 6 + var;\n 3 * 5;print: \"Hello World\";z = true;");
 
 	TokenList tokenList = lexer.process(str);
 

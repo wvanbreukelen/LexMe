@@ -148,6 +148,7 @@
     <ClInclude Include="LanguageDefinition.h" />
     <ClInclude Include="Lexer.h" />
     <ClInclude Include="LexeralAnalysis.h" />
+    <ClInclude Include="Literal.h" />
     <ClInclude Include="Operator.h" />
     <ClInclude Include="OperatorMap.h" />
     <ClInclude Include="resource.h" />

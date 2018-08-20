@@ -24,6 +24,7 @@ LexeralAnalysis::LexeralAnalysis() {
 	charClassifiers[' ']  = CharacterType::WHITESPACE;
 	charClassifiers['.']  = CharacterType::PRECISION;
 
+	// Add operators
 	for (const auto &op : LanguageDefinition::opMap.getMap()) {
 		std::string opText = op.second.text;
 
@@ -65,6 +66,11 @@ TokenList LexeralAnalysis::lexString(const std::string& str) {
 					// If it is a string, we pop off the first character (the semicolon).
 					if (prevTokenType == TokenType::STRING) {
 						tokenValue.erase(0, 1);
+					}
+
+					// true and false are both literals, not identifiers, so change the type to literal.
+					if (prevTokenType == TokenType::ID && tokenValue == LanguageDefinition::Literals::literalTrue || tokenValue == LanguageDefinition::Literals::literalFalse) {
+						prevTokenType = TokenType::LITERAL;
 					}
 
 					// Finally, we will create a new Token and add it to our token list
@@ -143,15 +149,15 @@ LanguageDefinition::TokenType LexeralAnalysis::resolveTokenType(LanguageDefiniti
 		if (prevTokenType == TokenType::ID || prevTokenType == TokenType::LITERAL) {
 			return prevTokenType;
 		} else if (charType == CharacterType::DIGIT) {
-			return TokenType::DIGIT;
+			return TokenType::LITERAL; // DIGIT
 		}
 		else {
 			return TokenType::ID;
 		}
 	case CharacterType::PRECISION:
 		// TODO: what will we do if there are two precision points?
-		if (prevTokenType == TokenType::DIGIT) {
-			return TokenType::DIGIT;
+		if (prevTokenType == TokenType::LITERAL) { // DIGIT
+			return TokenType::LITERAL; // DIGIT
 		}
 	case CharacterType::STR_QUOTE:
 		return TokenType::STRING;

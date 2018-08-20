@@ -57,6 +57,9 @@ public:
 		case TokenType::STRING:
 			os << "string: " << value;
 			break;
+		case TokenType::LITERAL:
+			os << "literal: " << value;
+			break;
 		case TokenType::NEWLINE:
 			os << "newline";
 			break;

@@ -3,6 +3,7 @@
 #include <type_traits>
 #include "Operator.h"
 #include "OperatorMap.h"
+#include "Literal.h"
 
 namespace LanguageDefinition {
 
@@ -41,8 +42,34 @@ namespace LanguageDefinition {
 		{"/"},
 		{":"},
 		{"+"},
-		{"-"}
+		{"-"},
+		{"&"},
+		{"&&"},
+		{"|"},
+		{"||"},
+		{"->"},
+		{"="},
+		{"?"},
+		{"=="},
+		{"!="},
+		{"!"},
+		{">"},
+		{"<"},
+		{">="},
+		{"<="},
 	};
+
+	// Define literals, like true
+	// Note that not all literals can be described, for example 6.02e23 or "music" cannot be described.
+	//const Literal languageLiterals[]{
+	//	{"true"},
+	//	{"false"}
+	//};
+
+	namespace Literals {
+		static constexpr char* literalTrue = "true";
+		static constexpr char* literalFalse = "false";
+	}
 
 	static OperatorMap opMap(languageOperators, std::extent<decltype(languageOperators)>::value);
 }

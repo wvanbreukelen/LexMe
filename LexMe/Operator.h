@@ -2,7 +2,8 @@
 
 #include <string>
 
-struct Operator {
+class Operator {
+public:
 	std::string text;
 
 	Operator(const char* text) : text(text) {};
