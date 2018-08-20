@@ -54,6 +54,9 @@ public:
 		case TokenType::COMMENT:
 			os << "comment: " << value;
 			break;
+		case TokenType::STRING:
+			os << "string: " << value;
+			break;
 		case TokenType::NEWLINE:
 			os << "newline";
 			break;

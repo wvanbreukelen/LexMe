@@ -43,10 +43,11 @@ TokenList LexeralAnalysis::lexString(const std::string& str) {
 	std::string tokenValue;
 	LanguageDefinition::TokenType prevTokenType = TokenType::WHITESPACE;
 
-	for (auto const &ch : str) {
+	//for (auto const &ch : str) {
+	for (unsigned int i = 0; i < str.size(); i++) {
 
 		// First, we need to check with with kind of character we are dealing with.
-		LanguageDefinition::CharacterType charType = classifyCharacter(ch);
+		LanguageDefinition::CharacterType charType = classifyCharacter(str[i]);
 		LanguageDefinition::TokenType newTokenType = resolveTokenType(charType, prevTokenType);
 
 		if (newTokenType != prevTokenType) {
@@ -61,6 +62,11 @@ TokenList LexeralAnalysis::lexString(const std::string& str) {
 						tokens.push_back(makeToken(prevTokenType, linePos, charPos, op.text));
 					}
 				} else {
+					// If it is a string, we pop off the first character (the semicolon).
+					if (prevTokenType == TokenType::STRING) {
+						tokenValue.erase(0, 1);
+					}
+
 					// Finally, we will create a new Token and add it to our token list
 					tokens.push_back(makeToken(prevTokenType, linePos, charPos, tokenValue));
 				}
@@ -70,14 +76,18 @@ TokenList LexeralAnalysis::lexString(const std::string& str) {
 		}
 
 		if (newTokenType != TokenType::WHITESPACE && newTokenType != TokenType::LINE_END) {
+
 			// Then, we need to extract the data required for this token, if required.
 			// Add the character to the token value.
-			tokenValue += ch;
+
+			tokenValue += str[i];
+			
+			
 		}
 
 		prevTokenType = newTokenType;
 
-		if (ch == '\n') {
+		if (str[i] == '\n') {
 			linePos++;
 			charPos = 1;
 		} else {
@@ -111,6 +121,15 @@ LanguageDefinition::CharacterType LexeralAnalysis::classifyCharacter(const uint8
 }
 
 LanguageDefinition::TokenType LexeralAnalysis::resolveTokenType(LanguageDefinition::CharacterType charType, LanguageDefinition::TokenType prevTokenType) {
+	if (prevTokenType == TokenType::STRING) {
+		if (charType == CharacterType::STR_QUOTE) {
+			return TokenType::WHITESPACE; // If the string is empty, make it a whitespace.
+		}
+		else {
+			return TokenType::STRING;
+		}
+	}
+	
 	switch (charType) {
 	case CharacterType::WHITESPACE:
 		return TokenType::WHITESPACE;
@@ -130,9 +149,12 @@ LanguageDefinition::TokenType LexeralAnalysis::resolveTokenType(LanguageDefiniti
 			return TokenType::ID;
 		}
 	case CharacterType::PRECISION:
+		// TODO: what will we do if there are two precision points?
 		if (prevTokenType == TokenType::DIGIT) {
 			return TokenType::DIGIT;
 		}
+	case CharacterType::STR_QUOTE:
+		return TokenType::STRING;
 	default:
 		return TokenType::UNKNOWN;
 	}

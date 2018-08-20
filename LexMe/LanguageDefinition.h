@@ -15,6 +15,7 @@ namespace LanguageDefinition {
 		WHITESPACE,
 		LITERAL,
 		DIGIT,
+		STRING,
 		LINE_END,
 		UNKNOWN
 	};
