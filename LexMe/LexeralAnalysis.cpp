@@ -23,8 +23,8 @@ LexeralAnalysis::LexeralAnalysis() {
 	charClassifiers[';']  = CharacterType::LINE_BREAK;
 	charClassifiers[' ']  = CharacterType::WHITESPACE;
 
-	for (const auto &op : LanguageDefinition::operators) {
-		std::string opText = op.text;
+	for (const auto &op : LanguageDefinition::opMap.getMap()) {
+		std::string opText = op.second.text;
 
 		for (unsigned int i = 0; i < opText.length(); i++) {
 			charClassifiers[opText[i]] = CharacterType::OPERATOR;
@@ -37,6 +37,8 @@ TokenList LexeralAnalysis::lexString(const char* str) {
 }
 
 TokenList LexeralAnalysis::lexString(const std::string& str) {
+	unsigned int linePos = 1, charPos = 1;
+	TokenList tokens;
 	std::string tokenValue;
 	LanguageDefinition::TokenType prevTokenType = TokenType::WHITESPACE;
 
@@ -48,12 +50,22 @@ TokenList LexeralAnalysis::lexString(const std::string& str) {
 
 		if (newTokenType != prevTokenType) {
 			if (!tokenValue.empty()) {
-				// Finish token, process it.
-				if (newTokenType == TokenType::OPERATOR) {
+				// Token type transition, process the previous token type.
+				if (prevTokenType == TokenType::OPERATOR) {
 					std::vector<Operator> opMatches;
+					LanguageDefinition::opMap.searchMatchingOperators(tokenValue, opMatches);
 
+					for (auto op : opMatches) {
+						// Finally, we will create a new Token and add it to our token list
+						tokens.push_back(makeToken(prevTokenType, linePos, charPos, op.text));
+					}
+				} else {
+					// Finally, we will create a new Token and add it to our token list
+					tokens.push_back(makeToken(prevTokenType, linePos, charPos, tokenValue));
 				}
 			}
+
+			tokenValue = "";
 		}
 
 		if (newTokenType != TokenType::WHITESPACE && newTokenType != TokenType::LINE_END) {
@@ -64,14 +76,17 @@ TokenList LexeralAnalysis::lexString(const std::string& str) {
 
 		prevTokenType = newTokenType;
 
-		
-
-		// Finally, we will create a new Token and add it to our token list
+		if (ch == '\n') {
+			linePos++;
+			charPos = 1;
+		} else {
+			charPos++;
+		}
 
 		// We repeat this process to the end of the string. We throw exceptions if things go wrong.
 	}
 
-	return TokenList();
+	return tokens;
 }
 
 LanguageDefinition::CharacterType LexeralAnalysis::classifyCharacter(const uint8_t ch) {
@@ -98,6 +113,9 @@ LanguageDefinition::TokenType LexeralAnalysis::resolveTokenType(LanguageDefiniti
 	switch (charType) {
 	case CharacterType::WHITESPACE:
 		return TokenType::WHITESPACE;
+	case CharacterType::LINE_BREAK:
+	case CharacterType::NEWLINE:
+		return TokenType::LINE_END;
 	case CharacterType::OPERATOR:
 		return TokenType::OPERATOR;
 	case CharacterType::LETTER:

@@ -9,17 +9,16 @@ typedef LanguageDefinition::TokenType TokenType;
 class TokenData
 {
 private:
-	const char* value;
+	std::string value;
 	TokenType type;
 
 	int linePos, lineCharPos;
 	std::string file;
 
 public:
-	TokenData(TokenType type, int linePos, int lineCharPos, const char* value, std::string file = "") : type(type), linePos(linePos), lineCharPos(lineCharPos), value(value), file(file) {};
+	TokenData(TokenType type, int linePos, int lineCharPos, std::string value, std::string file) : type(type), linePos(linePos), lineCharPos(lineCharPos), value(value), file(file) {};
 	
-
-	void setValue(const char* value) {
+	void setValue(std::string value) {
 		this->value = value;
 	}
 
@@ -44,26 +43,32 @@ public:
 
 		switch (type) {
 		case TokenType::OPERATOR:
-			os << "op: " << value;
+			os << "operator: " << value;
 			break;
 		case TokenType::ID:
-			os << "id: " << value;
+			os << "identifier: " << value;
 			break;
 		case TokenType::DIGIT:
-			os << "num: " << value;
+			os << "number: " << value;
 			break;
 		case TokenType::COMMENT:
-			os << "comm: " << value;
+			os << "comment: " << value;
 			break;
 		case TokenType::NEWLINE:
 			os << "newline";
+			break;
+		case TokenType::UNKNOWN:
+			os << "unknown";
 			break;
 		default:
 			break;
 		}
 
-		os << "]\n";
+		os << ']';
+		os << ' ' << linePos << ':' << lineCharPos << std::endl;
 	}
 };
 
 typedef std::shared_ptr<TokenData> Token;
+
+Token makeToken(TokenType type, int linePos, int lineCharPos, std::string value, std::string file = "");

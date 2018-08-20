@@ -11,7 +11,7 @@ class LexeralAnalysis
 private:
 	typedef LanguageDefinition::TokenType TokenType;
 	typedef LanguageDefinition::CharacterType CharacterType;
-	typedef LanguageDefinition::Operator Operator;
+	typedef Operator Operator;
 
 	LanguageDefinition::CharacterType classifyCharacter(const uint8_t strEntry);
 	LanguageDefinition::TokenType resolveTokenType(LanguageDefinition::CharacterType charType, LanguageDefinition::TokenType prevTokenType);

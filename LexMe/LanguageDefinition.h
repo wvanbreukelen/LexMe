@@ -1,19 +1,23 @@
 #pragma once
 
-#include <unordered_map>
-#include <vector>
+#include <type_traits>
+#include "Operator.h"
+#include "OperatorMap.h"
 
 namespace LanguageDefinition {
-	const char languageOperators[]{
-		':',
-		'*',
-		'/',
-		':',
-		'+',
-		'-'
-	};
 
-	enum class TokenType { OPERATOR, ID, NEWLINE, COMMENT, WHITESPACE, LITERAL, DIGIT, LINE_END, UNKNOWN };
+
+	enum class TokenType { 
+		OPERATOR,
+		ID,
+		NEWLINE,
+		COMMENT,
+		WHITESPACE,
+		LITERAL,
+		DIGIT,
+		LINE_END,
+		UNKNOWN
+	};
 
 	enum class CharacterType {
 		LETTER,
@@ -23,21 +27,20 @@ namespace LanguageDefinition {
 		STR_QUOTE,
 		COMMENT_SINGLE_LINE,
 		LINE_BREAK,
+		PARH_LEFT,
+		PARH_RIGHT,
 		WHITESPACE,
 		UNKNOWN
 	};
 
-	struct Operator {
-		const char* text;
-
-		Operator(const char* text) : text(text) {};
+	const Operator languageOperators[]{
+		{":"},
+		{"*"},
+		{"/"},
+		{":"},
+		{"+"},
+		{"-"}
 	};
 
-	static const std::vector<Operator> operators{
-		{ "+" },
-		{ "-" },
-		{ "/" },
-		{ "*" },
-		{ ":" },
-	};
+	static OperatorMap opMap(languageOperators, std::extent<decltype(languageOperators)>::value);
 }

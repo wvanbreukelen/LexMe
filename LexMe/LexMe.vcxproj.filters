@@ -42,6 +42,12 @@
     <ClInclude Include="LanguageDefinition.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="OperatorMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Operator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -60,6 +66,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TokenList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="OperatorMap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
