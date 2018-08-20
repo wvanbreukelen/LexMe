@@ -9,15 +9,18 @@ int main()
 {
 	Lexer lexer;
 
-	TokenList tokenList = lexer.process("print-> 4 * var + 1");
+	std::string str("print-> 4 * var + 1");
+
+	TokenList tokenList = lexer.process(str);
 
 	// TokenType type, int linePos, int lineCharPos, std::string file = ""
 
-	tokenList.push_back(Token(new TokenData(TokenType::OPERATOR, 23, 2, "*")));
-	tokenList.push_back(Token(new TokenData(TokenType::ID, 23, 4, "name")));
+	//tokenList.push_back(Token(new TokenData(LanguageDefinition::TokenType::OPERATOR, 23, 2, "*")));
+	//tokenList.push_back(Token(new TokenData(LanguageDefinition::TokenType::ID, 23, 4, "name")));
 
 	tokenList.print(std::cout);
 
+	getchar();
 	getchar();
 	
 	// Do something with the token list.

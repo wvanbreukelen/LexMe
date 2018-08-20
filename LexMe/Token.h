@@ -2,8 +2,9 @@
 
 #include <string>
 #include <memory>
+#include "LanguageDefinition.h"
 
-enum class TokenType { OPERATOR, NUMBER, ID, NEWLINE, COMMENT };
+typedef LanguageDefinition::TokenType TokenType;
 
 class TokenData
 {
@@ -48,7 +49,7 @@ public:
 		case TokenType::ID:
 			os << "id: " << value;
 			break;
-		case TokenType::NUMBER:
+		case TokenType::DIGIT:
 			os << "num: " << value;
 			break;
 		case TokenType::COMMENT:
