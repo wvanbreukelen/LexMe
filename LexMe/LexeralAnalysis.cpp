@@ -64,22 +64,22 @@ TokenList LexeralAnalysis::lexString(const std::string& str) {
 					}
 				} else {
 					// If the are dealing with a comment, ignore it.
-					if (prevTokenType == TokenType::LINE_COMMENT) {
-						continue; // I know this is ugly.
-					}
+					if (prevTokenType != TokenType::LINE_COMMENT) {
 
-					// If it is a string, we pop off the first character (the semicolon).
-					if (prevTokenType == TokenType::STRING) {
-						tokenValue.erase(0, 1);
-					}
+						// If it is a string, we pop off the first character (the semicolon).
+						if (prevTokenType == TokenType::STRING) {
+							tokenValue.erase(0, 1);
+						}
 
-					// true and false are both literals, not identifiers, so change the type to literal.
-					if (prevTokenType == TokenType::ID && tokenValue == LanguageDefinition::Literals::literalTrue || tokenValue == LanguageDefinition::Literals::literalFalse) {
-						prevTokenType = TokenType::LITERAL;
-					}
+						// true and false are both literals, not identifiers, so change the type to literal.
+						if (prevTokenType == TokenType::ID && tokenValue == LanguageDefinition::Literals::literalTrue || tokenValue == LanguageDefinition::Literals::literalFalse) {
+							prevTokenType = TokenType::LITERAL;
+						}
 
-					// Finally, we will create a new Token and add it to our token list
-					tokens.push_back(makeToken(prevTokenType, linePos, charPos, tokenValue));
+						// Finally, we will create a new Token and add it to our token list
+						tokens.push_back(makeToken(prevTokenType, linePos, charPos, tokenValue));
+
+					}
 				}
 			}
 

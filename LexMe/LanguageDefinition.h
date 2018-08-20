@@ -71,5 +71,6 @@ namespace LanguageDefinition {
 		static constexpr char* literalFalse = "false";
 	}
 
+
 	static OperatorMap opMap(languageOperators, std::extent<decltype(languageOperators)>::value);
 }
