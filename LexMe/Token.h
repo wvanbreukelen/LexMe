@@ -60,6 +60,12 @@ public:
 		case TokenType::NEWLINE:
 			os << "newline";
 			break;
+		case TokenType::LINE_END:
+			os << "line end";
+			break;
+		case TokenType::INSTRUCTION_END:
+			os << "instruction end";
+			break;
 		case TokenType::UNKNOWN:
 			os << "unknown";
 			break;

@@ -50,6 +50,8 @@ TokenList LexeralAnalysis::lexString(const std::string& str) {
 		LanguageDefinition::CharacterType charType = classifyCharacter(str[i]);
 		LanguageDefinition::TokenType newTokenType = resolveTokenType(charType, prevTokenType);
 
+
+
 		if (newTokenType != prevTokenType) {
 			if (!tokenValue.empty()) {
 				// Token type transition, process the previous token type.
@@ -61,7 +63,8 @@ TokenList LexeralAnalysis::lexString(const std::string& str) {
 						// Finally, we will create a new Token and add it to our token list
 						tokens.push_back(makeToken(prevTokenType, linePos, charPos, op.text));
 					}
-				} else {
+				}
+				else {
 					// If the are dealing with a comment, ignore it.
 					if (prevTokenType != TokenType::LINE_COMMENT) {
 
@@ -85,12 +88,16 @@ TokenList LexeralAnalysis::lexString(const std::string& str) {
 			tokenValue = "";
 		}
 
-		if (newTokenType != TokenType::WHITESPACE && newTokenType != TokenType::LINE_END) {
+		if (newTokenType != TokenType::WHITESPACE && newTokenType != TokenType::LINE_END && newTokenType != TokenType::INSTRUCTION_END) {
 
 			// Then, we need to extract the data required for this token, if required.
 			// Add the character to the token value.
 
 			tokenValue += str[i];
+		}
+
+		if (prevTokenType == TokenType::INSTRUCTION_END || prevTokenType == TokenType::LINE_END) {
+			tokens.push_back(makeToken(prevTokenType, linePos, charPos, "")); // Has no token value.
 		}
 
 		prevTokenType = newTokenType;
@@ -144,6 +151,7 @@ LanguageDefinition::TokenType LexeralAnalysis::resolveTokenType(LanguageDefiniti
 	case CharacterType::WHITESPACE:
 		return TokenType::WHITESPACE;
 	case CharacterType::LINE_BREAK:
+		return TokenType::INSTRUCTION_END;
 	case CharacterType::NEWLINE:
 		return TokenType::LINE_END;
 	case CharacterType::COMMENT_SINGLE_LINE:

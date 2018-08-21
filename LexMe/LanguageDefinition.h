@@ -18,6 +18,7 @@ namespace LanguageDefinition {
 		DIGIT,
 		STRING,
 		LINE_END,
+		INSTRUCTION_END,
 		UNKNOWN,
 		UNDEFINED
 	};
