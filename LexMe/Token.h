@@ -51,11 +51,14 @@ public:
 		case TokenType::DIGIT:
 			os << "number: " << value;
 			break;
-		case TokenType::STRING:
-			os << "string: " << value;
+		case TokenType::LITERAL_STRING:
+			os << "literal string: " << value;
 			break;
-		case TokenType::LITERAL:
-			os << "literal: " << value;
+		case TokenType::LITERAL_BOOL:
+			os << "literal bool: " << value;
+			break;
+		case TokenType::LITERAL_NUMBER:
+			os << "literal number: " << value;
 			break;
 		case TokenType::NEWLINE:
 			os << "newline";

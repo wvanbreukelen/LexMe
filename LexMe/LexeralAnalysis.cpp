@@ -69,13 +69,13 @@ TokenList LexeralAnalysis::lexString(const std::string& str) {
 					if (prevTokenType != TokenType::LINE_COMMENT) {
 
 						// If it is a string, we pop off the first character (the semicolon).
-						if (prevTokenType == TokenType::STRING) {
+						if (prevTokenType == TokenType::LITERAL_STRING) {
 							tokenValue.erase(0, 1);
 						}
 
 						// true and false are both literals, not identifiers, so change the type to literal.
 						if (prevTokenType == TokenType::ID && tokenValue == LanguageDefinition::Literals::literalTrue || tokenValue == LanguageDefinition::Literals::literalFalse) {
-							prevTokenType = TokenType::LITERAL;
+							prevTokenType = TokenType::LITERAL_BOOL;
 						}
 
 						// Finally, we will create a new Token and add it to our token list
@@ -138,12 +138,12 @@ LanguageDefinition::TokenType LexeralAnalysis::resolveTokenType(LanguageDefiniti
 		}
 	}
 	
-	if (prevTokenType == TokenType::STRING) {
+	if (prevTokenType == TokenType::LITERAL_STRING) {
 		if (charType == CharacterType::STR_QUOTE) {
 			return TokenType::WHITESPACE; // If the string is empty, make it a whitespace.
 		}
 		else {
-			return TokenType::STRING;
+			return TokenType::LITERAL_STRING;
 		}
 	}
 	
@@ -160,21 +160,21 @@ LanguageDefinition::TokenType LexeralAnalysis::resolveTokenType(LanguageDefiniti
 		return TokenType::OPERATOR;
 	case CharacterType::LETTER:
 	case CharacterType::DIGIT:
-		if (prevTokenType == TokenType::ID || prevTokenType == TokenType::LITERAL) {
+		if (prevTokenType == TokenType::ID || prevTokenType == TokenType::LITERAL_NUMBER) {
 			return prevTokenType;
 		} else if (charType == CharacterType::DIGIT) {
-			return TokenType::LITERAL; // DIGIT
+			return TokenType::LITERAL_NUMBER; // DIGIT
 		}
 		else {
 			return TokenType::ID;
 		}
 	case CharacterType::PRECISION:
 		// TODO: what will we do if there are two precision points?
-		if (prevTokenType == TokenType::LITERAL) { // DIGIT
-			return TokenType::LITERAL; // DIGIT
+		if (prevTokenType == TokenType::LITERAL_NUMBER) { // DIGIT
+			return TokenType::LITERAL_NUMBER; // DIGIT
 		}
 	case CharacterType::STR_QUOTE:
-		return TokenType::STRING;
+		return TokenType::LITERAL_STRING;
 	default:
 		return TokenType::UNKNOWN;
 	}
