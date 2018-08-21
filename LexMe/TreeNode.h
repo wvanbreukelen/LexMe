@@ -1,5 +1,10 @@
 ﻿#pragma once
 
+/*
+Todo:
+Write TreeNode vector specialization for TreeNodes with an undetermined amount of children
+*/
+
 #include <vector>
 #include <array>
 #include <stack>
