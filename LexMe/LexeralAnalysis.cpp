@@ -25,7 +25,7 @@ LexeralAnalysis::LexeralAnalysis() {
 	charClassifiers['.']  = CharacterType::PRECISION;
 
 	// Add operators
-	for (const auto &op : LanguageDefinition::opMap.getMap()) {
+	for (const auto &op : LanguageDefinition::operatorMap.getMap()) {
 		std::string opText = op.second.text;
 
 		for (unsigned int i = 0; i < opText.length(); i++) {
@@ -57,20 +57,36 @@ TokenList LexeralAnalysis::lexString(const std::string& str) {
 				// Token type transition, process the previous token type.
 				if (prevTokenType == TokenType::OPERATOR) {
 					std::vector<Operator> opMatches;
-					LanguageDefinition::opMap.searchMatchingOperators(tokenValue, opMatches);
+					LanguageDefinition::operatorMap.searchMatching(tokenValue, opMatches);
 
 					for (auto op : opMatches) {
 						// Finally, we will create a new Token and add it to our token list
 						tokens.push_back(makeToken(prevTokenType, linePos, charPos, op.text));
 					}
-				}
-				else {
+				} else {
 					// If the are dealing with a comment, ignore it.
 					if (prevTokenType != TokenType::LINE_COMMENT) {
 
 						// If it is a string, we pop off the first character (the semicolon).
 						if (prevTokenType == TokenType::LITERAL_STRING) {
 							tokenValue.erase(0, 1);
+						}
+
+						// If we are dealing with a literal number, try to be more specific (if possible)
+						if (prevTokenType == TokenType::LITERAL_NUMBER) {
+							for (const auto &op : LanguageDefinition::literalMap.getMap()) {
+								std::string opText = op.second.text;
+
+								// Token value must be bigger than a type identifier, for example the literal identifer 0x (for hexadecimals) could fit the current length of the tokenValue field.
+								if (tokenValue.length() > opText.length()) {
+									if (tokenValue.rfind(opText, 0) != std::string::npos) {
+										// We have found a literal match!
+										// Let's change the token type to the corresponding literal.
+										prevTokenType = op.second.tokenType;
+									}
+								}
+								
+							}
 						}
 
 						// true and false are both literals, not identifiers, so change the type to literal.
@@ -99,6 +115,7 @@ TokenList LexeralAnalysis::lexString(const std::string& str) {
 		if (prevTokenType == TokenType::INSTRUCTION_END || prevTokenType == TokenType::LINE_END) {
 			tokens.push_back(makeToken(prevTokenType, linePos, charPos, "")); // Has no token value.
 		}
+
 
 		prevTokenType = newTokenType;
 

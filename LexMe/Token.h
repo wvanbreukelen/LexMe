@@ -60,6 +60,12 @@ public:
 		case TokenType::LITERAL_NUMBER:
 			os << "literal number: " << value;
 			break;
+		case TokenType::LITERAL_HEX:
+			os << "literal hex: " << value;
+			break;
+		case TokenType::LITERAL_BIN:
+			os << "literal bin: " << value;
+			break;
 		case TokenType::NEWLINE:
 			os << "newline";
 			break;

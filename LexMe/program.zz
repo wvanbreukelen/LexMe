@@ -1,4 +1,5 @@
-var = 3;
+var = 0x03;
+var2 = 0b12345;
 print: 438.36 * 6 + var;
 3 * 5;
 print: "Hello World";

@@ -3,42 +3,11 @@
 #include <type_traits>
 #include "Operator.h"
 #include "OperatorMap.h"
+#include "SearchableMap.h"
 #include "Literal.h"
+#include "TypeDefinition.h"
 
 namespace LanguageDefinition {
-
-
-	enum class TokenType { 
-		OPERATOR,
-		ID,
-		NEWLINE,
-		LINE_COMMENT,
-		WHITESPACE,
-		LITERAL_STRING,
-		LITERAL_BOOL,
-		LITERAL_NUMBER,
-		DIGIT,
-		//STRING,
-		LINE_END,
-		INSTRUCTION_END,
-		UNKNOWN,
-		UNDEFINED
-	};
-
-	enum class CharacterType {
-		LETTER,
-		DIGIT,
-		NEWLINE,
-		OPERATOR,
-		STR_QUOTE,
-		COMMENT_SINGLE_LINE,
-		LINE_BREAK,
-		PARH_LEFT,
-		PARH_RIGHT,
-		PRECISION,
-		WHITESPACE,
-		UNKNOWN
-	};
 
 	const Operator languageOperators[]{
 		{":", 1}, // Function call
@@ -62,6 +31,13 @@ namespace LanguageDefinition {
 		{"<=", 6}, // Comparison: larger-smaller-then
 	};
 
+
+
+	const Literal literalIdentifiers[]{
+		{"0x", TokenType::LITERAL_HEX },
+		{"0b", TokenType::LITERAL_BIN },
+	};
+
 	// Define literals, like true
 	// Note that not all literals can be described, for example 6.02e23 or "music" cannot be described.
 	//const Literal languageLiterals[]{
@@ -74,6 +50,6 @@ namespace LanguageDefinition {
 		static constexpr char* literalFalse = "false";
 	}
 
-
-	static OperatorMap opMap(languageOperators, std::extent<decltype(languageOperators)>::value);
+	static SearchableMap<Operator> operatorMap(languageOperators, std::extent<decltype(languageOperators)>::value);
+	static SearchableMap<Literal> literalMap(literalIdentifiers, std::extent<decltype(literalIdentifiers)>::value);
 }

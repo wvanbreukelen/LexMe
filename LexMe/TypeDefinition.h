@@ -1,0 +1,40 @@
+#pragma once
+
+namespace LanguageDefinition {
+
+	enum class TokenType {
+		OPERATOR,
+		ID,
+		NEWLINE,
+		LINE_COMMENT,
+		WHITESPACE,
+		LITERAL_STRING,
+		LITERAL_BOOL,
+		LITERAL_NUMBER,
+		LITERAL_HEX,
+		LITERAL_BIN,
+		DIGIT,
+		LINE_END,
+		INSTRUCTION_END,
+		UNKNOWN,
+		UNDEFINED
+	};
+
+	enum class CharacterType {
+		LETTER,
+		DIGIT,
+		BOOL,
+		HEX,
+		BIN,
+		NEWLINE,
+		OPERATOR,
+		STR_QUOTE,
+		COMMENT_SINGLE_LINE,
+		LINE_BREAK,
+		PARH_LEFT,
+		PARH_RIGHT,
+		PRECISION,
+		WHITESPACE,
+		UNKNOWN
+	};
+}

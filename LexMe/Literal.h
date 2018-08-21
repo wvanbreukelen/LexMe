@@ -1,11 +1,16 @@
 #pragma once
 
-#include <string>
+#include "TypeDefinition.h"
 
-struct Literal {
-	std::string text;
+using LanguageDefinition::TokenType;
 
-	Literal(const char* text) : text(text) {};
-	Literal(const std::string& text) : text(text) {};
+class Literal {
+public:
+	const char *text = "";
+	TokenType tokenType = TokenType::UNKNOWN;
+
+	Literal(const char* text, const TokenType tokenType) : text(text), tokenType(tokenType) {};
+	//LiteralIdentifier(const std::string& text, TokenType tokenType) : text(text), tokenType(tokenType) {};
 	Literal() {};
 };
+

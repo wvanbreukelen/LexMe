@@ -57,6 +57,12 @@
     <ClInclude Include="ASTNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SearchableMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TypeDefinition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

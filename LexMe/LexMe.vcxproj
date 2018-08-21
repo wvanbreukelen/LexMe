@@ -151,6 +151,7 @@
     <ClInclude Include="Lexer.h" />
     <ClInclude Include="LexeralAnalysis.h" />
     <ClInclude Include="Literal.h" />
+    <ClInclude Include="SearchableMap.h" />
     <ClInclude Include="Operator.h" />
     <ClInclude Include="OperatorMap.h" />
     <ClInclude Include="resource.h" />
@@ -158,6 +159,7 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Token.h" />
     <ClInclude Include="TokenList.h" />
+    <ClInclude Include="TypeDefinition.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AST.cpp" />
