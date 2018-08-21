@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "Token.h"
 
 Token makeToken(TokenType type,  int linePos, int lineCharPos, std::string value, std::string file) {

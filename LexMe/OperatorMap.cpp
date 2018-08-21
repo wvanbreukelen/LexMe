@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "OperatorMap.h"
 
 std::unordered_map<std::string, Operator>& OperatorMap::getMap() {
