@@ -44,6 +44,7 @@ class TreeNode {
 
 		for (size_t i = 0; i < CHILDREN_COUNT; i++) {
 			if (children[i] != nullptr) {
+				// This boolean toggles true when there are unprinted children remaining
 				bool unprintedChildrenRemaining = (i + 1) < CHILDREN_COUNT && children[i + 1] != nullptr;
 
 				dashesStack.push_back(unprintedChildrenRemaining);
