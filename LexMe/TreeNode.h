@@ -73,6 +73,10 @@ public:
 
 	/**
 	 * @brief Copy assignment
+	 * 
+	 * @param copied
+	 *
+	 * @return TreeNode&
 	 */
 	TreeNode& operator= (const TreeNode& copied) {
 		data = copied.data;
@@ -95,6 +99,10 @@ public:
 	
 	/**
 	 * @brief Move assignment
+	 *
+	 * @param moved
+	 *
+	 * @return TreeNode&
 	 */
 	TreeNode& operator= (TreeNode&& moved) {
 		data = std::move(moved.data);
@@ -107,86 +115,156 @@ public:
 		std::cout << "TreeNode destructed" << std::endl;
 	}
 
+	/**
+	 * @brief Returns a reference to the node's data member
+	 *
+	 * @return DATA_T& Reference to the data member
+	 */
 	DATA_T& getData() {
 		return data;
 	}
 
+	/**
+	 * @brief Sets the node's data to the provided data
+	 *
+	 * @details
+	 * Sets the node's data field to the provided data. This is done by
+	 * directly copying the provided parameter. If a value is known by
+	 * reference, the DATA_T template of the TreeNode must be a pointer,
+	 * since references should not be null-initialized.
+	 *
+	 * @param data Data to copy into the node's data
+	 */
 	void setData(const DATA_T& data) {
 		this->data = data;
+	}
+
+	/**
+	 * @brief Iterates over all direct children looking for a node with the provided data
+	 *
+	 * @details 
+	 * Iterates over all direct children looking for the first node with the data
+	 * that equals the provided data param. If no node was found, a nullptr is 
+	 * returned.
+	 *
+	 * @param data The data that is compared with the data of the nodes
+	 *
+	 * @return TreeNode* Pointer to the matched node
+	 * @return nullptr No node was matched
+	 */
+	TreeNode* findNode(const DATA_T& data) {
+		for (size_t i = 0; i < CHILDREN_COUNT; i++) {
+			if (children[i] != nullptr && children[i]->getData() == data) {
+				return children[i];
+			}
+		}
+
+		return nullptr;
+	}
+
+	/**
+	 * @brief Recurses through all descendant nodes and returns a pointer when found
+	 *
+	 * @details
+	 * Recurses through all descendant nodes looking for the first node which data
+	 * equals the provided data. If no node was found, a nullptr is returned.
+	 *
+	 * @param data The data that is compared with the data of the nodes
+	 *
+	 * @return TreeNode* Pointer to the matched node
+	 * @return nullptr No node was matched
+	 */
+	TreeNode* findNodeRecursive(const DATA_T& data) {
+		for (size_t i = 0; i < CHILDREN_COUNT; i++) {
+			if (children[i] != nullptr) {
+				if (children[i]->getData() == data) {
+					return children[i];
+				} else {
+					return children[i]->findNodeRecursive(data);
+				}
+			}
+		}
+
+		return nullptr;
 	}
 
 	/**
 	 * @brief Releases ownership from child n and returns an unmanaged pointer
 	 * 
 	 * @details
-	 * Use this function when changing parents of subtrees. Once this function
-	 * is called, the subtree becomes unmanaged and the responsibility of managing
+	 * Use this function when changing parents of nodes. Once this function
+	 * is called, the node becomes unmanaged and the responsibility of managing
 	 * the memory is for the user.
-	 * A nullptr is returned when there is no subtree known at index n.
+	 * A nullptr is returned when there is no node known at index n.
+	 * Throws an out of range exception when n >= CHILDREN_COUNT.
 	 *
-	 * @param n Index of the subtree
+	 * @param n Index of the node
 	 *
-	 * @return TreeNode<DATA_T, CHIILDREN_COUNT> released subtree
+	 * @return TreeNode<DATA_T, CHIILDREN_COUNT> released node
 	 */
-	std::unique_ptr<TreeNode>&& releaseSubtree(size_t n) {
+	std::unique_ptr<TreeNode>&& releaseNode(size_t n) {
+		if (n >= CHILDREN_COUNT) {
+			throw std::out_of_range("Could not release node since n >= CHILDREN_COUNT");
+		}
+
 		return std::move(children[n]);
 	}
 
 	/**
-	 * @brief Claims ownership of the provided subtree
+	 * @brief Claims ownership of the provided node
 	 *
 	 * @details
-	 * Use this function when adding a subtree. Once this function is called,
-	 * the subtree becomes managed by the parenting node and the responsibility
-	 * of managing the memory is taken from the user. Which means the subtree
-	 * may not be destructed before it is released using releaseSubtree(int n).
+	 * Use this function when adding a node. Once this function is called,
+	 * the node becomes managed by the parenting node and the responsibility
+	 * of managing the memory is taken from the user. Which means the node
+	 * may not be destructed before it is released using releaseNode(int n).
 	 * Throws an exception when the new amount of children exceeds the capacity
 	 * provided as template argument CHILDREN_COUNT.
 	 * 
-	 * @param subtree Pointer to the TreeNode to claim
+	 * @param node Pointer to the TreeNode to claim
 	 *
-	 * @return int Index of the newly claimed subtree
+	 * @return int Index of the newly claimed node
 	 */
-	size_t claimSubtree(std::unique_ptr<TreeNode>&& subtree) {
+	size_t claimNode(std::unique_ptr<TreeNode>&& node) {
 		size_t i = 0;
 
 		for (; i < CHILDREN_COUNT; i++) {
 			if (children[i] == nullptr) {
-				children[i] = std::move(subtree);
+				children[i] = std::move(node);
 				break;
 			}
 		}
 
 		if (i == CHILDREN_COUNT) {
-			throw std::out_of_range("Could not claim subtree since there are no free slots");
+			throw std::out_of_range("Could not claim node since there are no free slots");
 		}
 
 		return i;
 	}
 
 	/**
-	 * @brief Claims ownership of the provided subtree at index n
+	 * @brief Claims ownership of the provided node at index n
 	 *
 	 * @details
-	 * Use this function when adding a subtree at the desired index. Once this
-	 * function is called, the subtree becomes managed by the parenting node
+	 * Use this function when adding a node at the desired index. Once this
+	 * function is called, the node becomes managed by the parenting node
 	 * and the responsibility of managing the memory is taken from the user.
-	 * Which means the subtree may not be destructed before it is released
-	 * using releaseSubtree(int n).
-	 * The subtree previously known at index n gets detructed, if applicable.
+	 * Which means the node may not be destructed before it is released
+	 * using releaseNode(int n).
+	 * The node previously known at index n gets detructed, if applicable.
 	 * Throws an exception when n is out of range of the bounds determined by
 	 * the template argument CHILDREN_COUNT.
 	 *
-	 * @param subtree Pointer to the TreeNode to claim
+	 * @param node Pointer to the TreeNode to claim
 	 * @param n Index to claim the TreeNode at
 	 */
-	void claimSubtree(std::unique_ptr<TreeNode>&& subtree, size_t n) {
+	void claimNode(std::unique_ptr<TreeNode>&& node, size_t n) {
 		if (n >= CHILDREN_COUNT) {
-			throw std::out_of_range("Could not claim subtree since n >= CHILDREN_COUNT");
+			throw std::out_of_range("Could not claim node since n >= CHILDREN_COUNT");
 		}
 
 		if (children[i] == nullptr) {
-			children[i] = std::move(subtree);
+			children[i] = std::move(node);
 		}
 	}
 
