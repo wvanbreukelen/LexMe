@@ -44,7 +44,6 @@ TokenList LexeralAnalysis::lexString(const std::string& str) {
 	std::string tokenValue;
 	LanguageDefinition::TokenType prevTokenType = TokenType::WHITESPACE;
 
-	//for (auto const &ch : str) {
 	for (unsigned int i = 0; i < str.size(); i++) {
 
 		// First, we need to check with with kind of character we are dealing with.
@@ -92,8 +91,6 @@ TokenList LexeralAnalysis::lexString(const std::string& str) {
 			// Add the character to the token value.
 
 			tokenValue += str[i];
-			
-			
 		}
 
 		prevTokenType = newTokenType;
@@ -112,13 +109,6 @@ TokenList LexeralAnalysis::lexString(const std::string& str) {
 }
 
 LanguageDefinition::CharacterType LexeralAnalysis::classifyCharacter(const uint8_t ch) {
-	/**try {
-		return charClassifiers.at(ch);
-	}
-	catch (std::out_of_range) {
-		throw std::exception("Unable to classify character!"); // TODO: print ch
-	}**/
-
 	// Try to find a matching character definition within the hashtable.
 	auto result = charClassifiers.find(ch);
 

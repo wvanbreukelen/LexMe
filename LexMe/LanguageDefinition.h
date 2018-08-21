@@ -18,7 +18,8 @@ namespace LanguageDefinition {
 		DIGIT,
 		STRING,
 		LINE_END,
-		UNKNOWN
+		UNKNOWN,
+		UNDEFINED
 	};
 
 	enum class CharacterType {
@@ -37,26 +38,25 @@ namespace LanguageDefinition {
 	};
 
 	const Operator languageOperators[]{
-		{":"},
-		{"*"},
-		{"/"},
-		{":"},
-		{"+"},
-		{"-"},
-		{"&"},
-		{"&&"},
-		{"|"},
-		{"||"},
-		{"->"},
-		{"="},
-		{"?"},
-		{"=="},
-		{"!="},
-		{"!"},
-		{">"},
-		{"<"},
-		{">="},
-		{"<="},
+		{":", 1}, // Function call
+		{"*", 3}, // Multiplication sign
+		{"/", 3}, // Division sign
+		{"+", 4}, // Addition sign
+		{"-", 4}, // Substraction sign
+		{"&", 8}, // Bitwise AND
+		{"&&", 11}, // Logical AND
+		{"|", 10}, // Bitwise OR
+		{"||", 12}, // Logital OR
+		{"->", 1}, // Undefined
+		{"=", 14}, // Assignment operator
+		{"?", 13}, // Inversion
+		{"==", 7}, // Comparison operator
+		{"!=", 7}, // Comparison-inverted operator
+		{"!", 2}, // Logical NOT operator
+		{">", 6}, // Comparison: larger-then
+		{"<", 6}, // Comparison: smaller-then
+		{">=", 6}, // Comparison: larger-even-then
+		{"<=", 6}, // Comparison: larger-smaller-then
 	};
 
 	// Define literals, like true

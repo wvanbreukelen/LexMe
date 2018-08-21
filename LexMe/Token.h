@@ -10,7 +10,7 @@ class TokenData
 {
 private:
 	std::string value;
-	TokenType type;
+	TokenType type = TokenType::UNDEFINED;
 
 	int linePos, lineCharPos;
 	std::string file;
