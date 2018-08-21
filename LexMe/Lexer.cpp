@@ -25,6 +25,9 @@ TokenList Lexer::processFile(const char* filename) {
 	// Read the file
 	std::string fileContents((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
 
+	// Close the file
+	file.close();
+
 	// Do the lexeral analysis
 	return lexerAnalysis.lexString(fileContents);
 }
