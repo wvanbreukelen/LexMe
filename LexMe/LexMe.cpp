@@ -9,9 +9,9 @@ int main()
 {
 	Lexer lexer;
 
-	std::string str("var = 3;print: 438.36 * 6 + var;\n 3 * 5;print: \"Hello World\";z = true; # Comment\n x = false;");
+	//std::string str("var = 3;print: 438.36 * 6 + var;\n 3 * 5;print: \"Hello World\";z = true; # Comment\n x = false;");
 
-	TokenList tokenList = lexer.process(str);
+	TokenList tokenList = lexer.processFile("program.zz");
 
 	// TokenType type, int linePos, int lineCharPos, std::string file = ""
 
