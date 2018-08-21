@@ -43,7 +43,7 @@ TokenList LexeralAnalysis::lexString(const std::string& str) {
 	std::string tokenValue;
 	LanguageDefinition::TokenType prevTokenType = TokenType::WHITESPACE;
 
-	for (unsigned int i = 0; i < str.size(); i++) {
+	for (unsigned int i = 0; i < str.size() + 1; i++) {
 
 		// First, we need to check with with kind of character we are dealing with.
 		LanguageDefinition::CharacterType charType = classifyCharacter(str[i]);
