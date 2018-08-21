@@ -152,23 +152,16 @@ LanguageDefinition::CharacterType LexeralAnalysis::classifyCharacter(const std::
 	// Check for multiline comments.
 	switch (str[chIndex]) {
 	case LanguageDefinition::Comments::multilineStart[0]:
-		
-		/**if ((str.size() - 1) > chIndex && str[chIndex + 1] == '*') {
-			return CharacterType::MULTI_LINE_COMMENT_START;
-		}**/
 
 		if ((str.size()) - (strlen(LanguageDefinition::Comments::multilineStart) - 1) > chIndex) {
 			for (unsigned int i = 1; i < strlen(LanguageDefinition::Comments::multilineStart); i++) {
 				if (str[chIndex + i] != LanguageDefinition::Comments::multilineStart[i]) {
 					isComment = false;
 					break;
-					//std::cout << str[chIndex + 1];
-					//break;
 				}
 			}
 			
 			if (isComment) {
-				std::cout << "Comment start!\n";
 				return CharacterType::MULTI_LINE_COMMENT_START;
 			}
 			
@@ -177,19 +170,14 @@ LanguageDefinition::CharacterType LexeralAnalysis::classifyCharacter(const std::
 	case LanguageDefinition::Comments::multilineEnd[0]:
 		
 		if ((str.size()) - (strlen(LanguageDefinition::Comments::multilineEnd) - 1) > chIndex) {
-			//std::cout << str[chIndex] << std::endl;
 			for (unsigned int i = 1; i < strlen(LanguageDefinition::Comments::multilineEnd); i++) {
-				
-
 				if (str[chIndex + i] != LanguageDefinition::Comments::multilineEnd[i]) {
 					isComment = false;
 					
 					break;
 				}
 			}
-			//std::cout << strlen(LanguageDefinition::Comments::multilineEnd) - 1 << std::endl;
 			if (isComment) {
-				std::cout << "Comment end!\n";
 				return CharacterType::MULTI_LINE_COMMENT_END;
 			}
 		}

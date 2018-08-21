@@ -7,4 +7,4 @@ print: "Hello World";
 3 * 2;
 5 * 2;**/
 
-z = 0x3;
+z = 3aa;
