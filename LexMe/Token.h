@@ -78,8 +78,17 @@ public:
 		case TokenType::INSTRUCTION_END:
 			os << "instruction end";
 			break;
+		case TokenType::BLOCK_COMMENT:
+			os << "block comment";
+			break;
+		case TokenType::LINE_COMMENT:
+			os << "line comment";
+			break;
 		case TokenType::UNKNOWN:
 			os << "unknown";
+			break;
+		case TokenType::WHITESPACE:
+			os << "whitespace";
 			break;
 		default:
 			break;

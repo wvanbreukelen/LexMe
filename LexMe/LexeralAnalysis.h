@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include "LanguageDefinition.h"
 #include "TokenList.h"
+#include "LexicalException.h"
 
 class LexeralAnalysis
 {
@@ -13,9 +14,8 @@ private:
 	typedef LanguageDefinition::CharacterType CharacterType;
 	typedef Operator Operator;
 
-	LanguageDefinition::CharacterType classifyCharacter(const uint8_t strEntry);
+	LanguageDefinition::CharacterType classifyCharacter(const std::string& str, const unsigned int chIndex);
 	LanguageDefinition::TokenType resolveTokenType(LanguageDefinition::CharacterType charType, LanguageDefinition::TokenType prevTokenType);
-	//LanguageDefinition::OperatorType classifyOperator(const uint8_t strEntry);
 
 	// Hashmap with character classifier, currently stored in RAM, but may be stored in ROM for performance dependend devices.
 	std::unordered_map<uint8_t, LanguageDefinition::CharacterType> charClassifiers;

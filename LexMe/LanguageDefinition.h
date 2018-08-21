@@ -51,6 +51,11 @@ namespace LanguageDefinition {
 		static constexpr char* literalFalse = "false";
 	}
 
+	namespace Comments {
+		static constexpr char* multilineStart = "/**";
+		static constexpr char* multilineEnd = "**/";
+	}
+
 	static SearchableMap<Operator> operatorMap(languageOperators, std::extent<decltype(languageOperators)>::value);
 	static SearchableMap<Literal> literalMap(literalIdentifiers, std::extent<decltype(literalIdentifiers)>::value);
 }

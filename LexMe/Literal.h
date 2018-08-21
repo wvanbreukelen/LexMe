@@ -10,7 +10,6 @@ public:
 	TokenType tokenType = TokenType::UNKNOWN;
 
 	Literal(const char* text, const TokenType tokenType) : text(text), tokenType(tokenType) {};
-	//LiteralIdentifier(const std::string& text, TokenType tokenType) : text(text), tokenType(tokenType) {};
 	Literal() {};
 };
 

@@ -1,9 +1,10 @@
 var = 0x03;
 var2 = 0b12345;
-var3 = 0o223;
+/**var3 = 0o223;
 print: 438.36 * 6 + var;
 3 * 5;
 print: "Hello World";
-z = true;
-# Comment
-x = false;
+3 * 2;
+5 * 2;**/
+
+z = 0x3;

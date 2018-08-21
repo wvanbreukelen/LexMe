@@ -54,6 +54,9 @@
     <ClInclude Include="TypeDefinition.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="LexicalException.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LexMe.cpp">

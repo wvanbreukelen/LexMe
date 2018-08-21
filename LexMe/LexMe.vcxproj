@@ -150,6 +150,7 @@
     <ClInclude Include="LanguageDefinition.h" />
     <ClInclude Include="Lexer.h" />
     <ClInclude Include="LexeralAnalysis.h" />
+    <ClInclude Include="LexicalException.h" />
     <ClInclude Include="Literal.h" />
     <ClInclude Include="SearchableMap.h" />
     <ClInclude Include="Operator.h" />
@@ -167,6 +168,9 @@
     <ClCompile Include="OperatorMap.cpp" />
     <ClCompile Include="Token.cpp" />
     <ClCompile Include="TokenList.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="program.zz" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
