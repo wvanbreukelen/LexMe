@@ -60,7 +60,7 @@ public:
 	TreeNode() : data() { }
 
 	/**
-	 * @brief Default constructor
+	 * @brief Constructor with data
 	 */
 	TreeNode(const DATA_T& data) : data(data) { }
 
