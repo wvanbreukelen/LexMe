@@ -158,6 +158,7 @@
     <ClInclude Include="Token.h" />
     <ClInclude Include="TokenList.h" />
     <ClInclude Include="TypeDefinition.h" />
+    <ClInclude Include="TreeNode.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AST.cpp" />
