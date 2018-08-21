@@ -56,6 +56,12 @@ namespace LanguageDefinition {
 		static constexpr char* multilineEnd = "**/";
 	}
 
+	namespace LanguageGeneral {
+		static constexpr char instructionEnd = ';';
+		static constexpr char commentSingleLine = '#';
+		static constexpr char stringQuote = '"';
+	}
+
 	static SearchableMap<Operator> operatorMap(languageOperators, std::extent<decltype(languageOperators)>::value);
 	static SearchableMap<Literal> literalMap(literalIdentifiers, std::extent<decltype(literalIdentifiers)>::value);
 }

@@ -15,11 +15,12 @@ LexeralAnalysis::LexeralAnalysis() {
 		charClassifiers[c] = CharacterType::DIGIT;
 	}
 	
-	// Then, do other special characters.
-	charClassifiers['#']  = CharacterType::COMMENT_SINGLE_LINE;
+	// Then, do other (language dependend) special characters.
+	charClassifiers[LanguageDefinition::LanguageGeneral::commentSingleLine]  = CharacterType::COMMENT_SINGLE_LINE;
+	charClassifiers[LanguageDefinition::LanguageGeneral::instructionEnd] = CharacterType::LINE_BREAK;
+	charClassifiers[LanguageDefinition::LanguageGeneral::stringQuote] = CharacterType::STR_QUOTE;
+
 	charClassifiers['\n'] = CharacterType::NEWLINE;
-	charClassifiers['"']  = CharacterType::STR_QUOTE;
-	charClassifiers[';']  = CharacterType::LINE_BREAK;
 	charClassifiers[' ']  = CharacterType::WHITESPACE;
 	charClassifiers['.']  = CharacterType::PRECISION;
 
