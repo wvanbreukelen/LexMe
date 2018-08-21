@@ -66,6 +66,9 @@ public:
 		case TokenType::LITERAL_BIN:
 			os << "literal bin: " << value;
 			break;
+		case TokenType::LITERAL_OCT:
+			os << "literal oct: " << value;
+			break;
 		case TokenType::NEWLINE:
 			os << "newline";
 			break;

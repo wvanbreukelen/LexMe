@@ -13,6 +13,7 @@ namespace LanguageDefinition {
 		LITERAL_NUMBER,
 		LITERAL_HEX,
 		LITERAL_BIN,
+		LITERAL_OCT,
 		DIGIT,
 		LINE_END,
 		INSTRUCTION_END,

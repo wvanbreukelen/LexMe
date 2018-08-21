@@ -36,6 +36,7 @@ namespace LanguageDefinition {
 	const Literal literalIdentifiers[]{
 		{"0x", TokenType::LITERAL_HEX },
 		{"0b", TokenType::LITERAL_BIN },
+		{"0o", TokenType::LITERAL_OCT }
 	};
 
 	// Define literals, like true
