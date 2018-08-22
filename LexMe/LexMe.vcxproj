@@ -152,6 +152,7 @@
     <ClInclude Include="LexeralAnalysis.h" />
     <ClInclude Include="LexicalException.h" />
     <ClInclude Include="Literal.h" />
+    <ClInclude Include="OperatorTree.h" />
     <ClInclude Include="SearchableMap.h" />
     <ClInclude Include="Operator.h" />
     <ClInclude Include="OperatorMap.h" />
