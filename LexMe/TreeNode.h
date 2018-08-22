@@ -9,9 +9,10 @@ Write TreeNode vector specialization for TreeNodes with an undetermined amount o
 #include <array>
 #include <stack>
 
-template <class DATA_T, int CHILDREN_COUNT = -1>
+template <class DATA_T, int CHILDREN_COUNT = -1, template<class...> class PTR_T = std::unique_ptr>
 class TreeNode {
-	std::array<std::unique_ptr<TreeNode>, CHILDREN_COUNT> children;
+	TreeNode* parent;
+	std::array<PTR_T<TreeNode>, CHILDREN_COUNT> children;
 
 	DATA_T data;
 
@@ -63,12 +64,12 @@ public:
 	/**
 	 * @brief Default constructor
 	 */
-	TreeNode() : data() { }
+	TreeNode() : parent(nullptr), data() { }
 
 	/**
 	 * @brief Constructor with data
 	 */
-	TreeNode(const DATA_T& data) : data(data) { }
+	TreeNode(const DATA_T& data) : parent(nullptr), data(data) { }
 
 	/**
 	 * @brief Copy constructor
@@ -116,9 +117,18 @@ public:
 		return *this;
 	}
 
-	// Temporary, default destructor is enough for this class
-	~TreeNode() {
-		std::cout << "TreeNode destructed" << std::endl;
+	/**
+	 * @brief Returns a boolean about whether the node has a parent
+	 */
+	bool hasParent() const {
+		return parent != nullptr;
+	}
+
+	/**
+	 * @brief Returns a reference to the parent node
+	 */
+	TreeNode& getParent() const {
+		return *parent;
 	}
 
 	/**
@@ -213,6 +223,7 @@ public:
 			throw std::out_of_range("Could not release node since n >= CHILDREN_COUNT");
 		}
 
+		children[n]->parent = nullptr;
 		return std::move(children[n]);
 	}
 
@@ -237,6 +248,7 @@ public:
 		for (; i < CHILDREN_COUNT; i++) {
 			if (children[i] == nullptr) {
 				children[i] = std::move(node);
+				children[i]->parent = this;
 				break;
 			}
 		}
@@ -269,9 +281,22 @@ public:
 			throw std::out_of_range("Could not claim node since n >= CHILDREN_COUNT");
 		}
 
-		if (children[i] == nullptr) {
-			children[i] = std::move(node);
-		}
+		children[n] = std::move(node);
+		children[n]->parent = this;
+	}
+
+	/**
+	 * @brief Returns true when a child is present at index n
+	 */
+	bool hasChild(size_t n) const {
+		return children[n] != nullptr;
+	}
+
+	/**
+	 * @brief Returns a reference to the child at index n
+	 */
+	TreeNode& getChild(size_t n) const {
+		return *children[n];
 	}
 
 	friend std::ostream& operator<< (std::ostream& os, const TreeNode& node) {
