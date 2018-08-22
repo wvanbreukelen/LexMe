@@ -16,29 +16,31 @@ private:
 	std::string file;
 
 public:
+	TokenData() { }
+
 	TokenData(TokenType type, int linePos, int lineCharPos, std::string value, std::string file) : type(type), linePos(linePos), lineCharPos(lineCharPos), value(value), file(file) {};
 	
 	void setValue(std::string value) {
 		this->value = value;
 	}
 
-	std::string getValue() {
+	const std::string& getValue() const {
 		return value;
 	}
 
-	TokenType getType() {
+	const TokenType& getType() const {
 		return type;
 	}
 
-	int getLinePos() {
+	int getLinePos() const {
 		return linePos;
 	}
 
-	int getLineCharPos() {
+	int getLineCharPos() const {
 		return lineCharPos;
 	}
 
-	void print(std::ostream &os) {
+	void print(std::ostream &os) const {
 		os << '[';
 
 		switch (type) {
@@ -95,7 +97,12 @@ public:
 		}
 
 		os << ']';
-		os << ' ' << linePos << ':' << lineCharPos << std::endl;
+		os << ' ' << linePos << ':' << lineCharPos;
+	}
+
+	friend std::ostream& operator<< (std::ostream& os, const TokenData& tokenData) {
+		tokenData.print(os);
+		return os;
 	}
 };
 
