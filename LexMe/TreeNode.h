@@ -7,7 +7,6 @@ Write TreeNode vector specialization for TreeNodes with an undetermined amount o
 
 #include <vector>
 #include <array>
-#include <stack>
 
 template <class DATA_T, int CHILDREN_COUNT = -1, template<class...> class PTR_T = std::unique_ptr>
 class TreeNode {
