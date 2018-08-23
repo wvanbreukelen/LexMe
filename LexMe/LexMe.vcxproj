@@ -146,7 +146,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AST.h" />
-    <ClInclude Include="ASTNode.h" />
     <ClInclude Include="LanguageDefinition.h" />
     <ClInclude Include="Lexer.h" />
     <ClInclude Include="LexeralAnalysis.h" />
@@ -162,8 +161,6 @@
     <ClInclude Include="TreeNode.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AST.cpp" />
-    <ClCompile Include="ASTNode.cpp" />
     <ClCompile Include="Lexer.cpp" />
     <ClCompile Include="LexeralAnalysis.cpp" />
     <ClCompile Include="LexMe.cpp" />

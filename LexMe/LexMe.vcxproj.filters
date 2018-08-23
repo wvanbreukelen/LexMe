@@ -42,12 +42,6 @@
     <ClInclude Include="Literal.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="AST.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ASTNode.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="SearchableMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -61,6 +55,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="OperatorTree.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AST.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -81,12 +78,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="OperatorMap.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="AST.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ASTNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
