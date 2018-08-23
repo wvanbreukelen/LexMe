@@ -1,8 +1,6 @@
 #pragma once
-class AST
-{
-public:
-	AST();
-	~AST();
-};
 
+#include "TreeNode.h"
+#include "Token.h"
+
+using AST = TreeNode<TokenData>;
