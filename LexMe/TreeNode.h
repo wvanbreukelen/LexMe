@@ -212,7 +212,7 @@ public:
 	 *
 	 * @return TreeNode<DATA_T, CHIILDREN_COUNT> released node
 	 */
-	std::unique_ptr<TreeNode>&& releaseNode(size_t n) {
+	PTR_T<TreeNode>&& releaseNode(size_t n) {
 		if (n >= CHILDREN_COUNT) {
 			throw std::out_of_range("Could not release node since n >= CHILDREN_COUNT");
 		}
@@ -236,7 +236,7 @@ public:
 	 *
 	 * @return int Index of the newly claimed node
 	 */
-	size_t claimNode(std::unique_ptr<TreeNode>&& node) {
+	size_t claimNode(PTR_T<TreeNode>&& node) {
 		size_t i = 0;
 
 		for (; i < CHILDREN_COUNT; i++) {
@@ -270,7 +270,7 @@ public:
 	 * @param node Pointer to the TreeNode to claim
 	 * @param n Index to claim the TreeNode at
 	 */
-	void claimNode(std::unique_ptr<TreeNode>&& node, size_t n) {
+	void claimNode(PTR_T<TreeNode>&& node, size_t n) {
 		if (n >= CHILDREN_COUNT) {
 			throw std::out_of_range("Could not claim node since n >= CHILDREN_COUNT");
 		}
