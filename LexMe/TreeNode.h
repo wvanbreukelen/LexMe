@@ -3,10 +3,80 @@
 #include <vector>
 #include <array>
 
+template <class DATA_T, int CHILDREN_COUNT, template<class...> class PTR_T>
+class TreeNode;
+
+template <class DATA_T, int CHILDREN_COUNT, template<class...> class PTR_T>
+class TreePrinter {
+	using TreeNode = TreeNode<DATA_T, CHILDREN_COUNT, PTR_T>;
+
+	std::vector<bool>& dashesStack;
+	std::vector<const TreeNode*>& visitedNodes;
+
+	const TreeNode& treeNode;
+
+	inline void printIdentation(std::ostream& os, int anchestorAmount, std::vector<bool>& dashesStack) const {
+		for (int i = 0; i < anchestorAmount - 1; i++) {
+			if (dashesStack[i]) {
+				os << "|   ";
+			}
+			else {
+				os << "    ";
+			}
+		}
+	}
+
+public:
+	TreePrinter(const TreeNode& treeNode) : treeNode(treeNode) { }
+	TreePrinter(const TreeNode& treeNode, std::vector<bool>& dashesStack, std::vector<const TreeNode*>& visitedNodes) : treeNode(treeNode), dashesStack(dashesStack), visitedNodes(visitedNodes) { }
+
+	void print(std::ostream& os, int childIndex, int anchestorAmount, int brotherAmount) {
+		auto it = std::find(visitedNodes.begin(), visitedNodes.end(), &treeNode);
+
+		if (anchestorAmount > 0) {
+			printIdentation(os, anchestorAmount, dashesStack);
+
+			// If the child index equals the amount of brothers, it means the child is listed last and thus a \ can be used.
+			if (childIndex == brotherAmount) {
+				os << "\\---";
+			}
+			else {
+				os << "|---";
+			}
+		}
+
+		os << treeNode.data << '\n';
+
+		if (it != visitedNodes.end()) {
+			printIdentation(os, anchestorAmount, dashesStack);
+
+			os << "    \\---[...]" << std::endl;
+			return;
+		}
+
+		size_t i = 0;
+
+		for (const TreeNode& child : treeNode) {
+			// This boolean toggles true when there are unprinted children remaining
+			bool unprintedChildrenRemaining = (i + 1) < treeNode.getSlots() && treeNode.children[i + 1] != nullptr;
+
+			dashesStack.push_back(unprintedChildrenRemaining);
+			visitedNodes.push_back(&treeNode);
+			TreePrinter printer(child, dashesStack, visitedNodes);
+			printer.print(os, i, anchestorAmount + 1, treeNode.countChildren() - 1);
+			dashesStack.pop_back();
+
+			i++;
+		}
+	}
+};
+
 template <class DATA_T, int CHILDREN_COUNT = -1, template<class...> class PTR_T = std::unique_ptr>
 class TreeNode {
+	using ChildrenContainer = std::array<PTR_T<TreeNode>, CHILDREN_COUNT>;
+
 	TreeNode* parent;
-	std::array<PTR_T<TreeNode>, CHILDREN_COUNT> children;
+	ChildrenContainer children;
 
 	DATA_T data;
 
@@ -20,41 +90,132 @@ class TreeNode {
 		return childrenCount;
 	}
 
-	void print(std::ostream& os, int childIndex, int anchestorAmount, int brotherAmount, std::vector<bool>& dashesStack) const {
-		if (anchestorAmount > 0) {
-			for (int i = 0; i < anchestorAmount - 1; i++) {
-				if (dashesStack[i]) {
-					os << "|   ";
-				}
-				else {
-					os << "    ";
-				}
-			}
-		
-			// If the child index equals the amount of brothers, it means the child is listed last and thus a \ can be used.
-			if (childIndex == brotherAmount) {
-				os << "\\---";
-			}
-			else {
-				os << "|---";
-			}
-		}
-
-		os << data << '\n';
-
-		for (size_t i = 0; i < CHILDREN_COUNT; i++) {
-			if (children[i] != nullptr) {
-				// This boolean toggles true when there are unprinted children remaining
-				bool unprintedChildrenRemaining = (i + 1) < CHILDREN_COUNT && children[i + 1] != nullptr;
-
-				dashesStack.push_back(unprintedChildrenRemaining);
-				children[i]->print(os, i, anchestorAmount + 1, countChildren() - 1, dashesStack);
-				dashesStack.pop_back();
-			}
-		}
+	size_t getSlots() const {
+		return CHILDREN_COUNT;
 	}
 
+	void print(std::ostream& os) const {
+		std::vector<bool> dashesStack;
+		std::vector<const TreeNode*> visitedNodes;
+		TreePrinter<DATA_T, CHILDREN_COUNT, PTR_T> printer(*this, dashesStack, visitedNodes);
+		printer.print(os, 0, 0, 0);
+	}
+
+	friend class TreePrinter<DATA_T, CHILDREN_COUNT, PTR_T>;
+
 public:
+	class iterator {
+		using wrapping_iterator = typename ChildrenContainer::iterator;
+
+		using self_type = iterator;
+		using value_type = TreeNode<DATA_T, CHILDREN_COUNT, PTR_T>;
+		using reference = value_type&;
+		using pointer = value_type*;
+		using iterator_category = std::forward_iterator_tag;
+		using difference_type = std::ptrdiff_t;
+
+		wrapping_iterator ptr;
+		wrapping_iterator endPtr;
+
+		void skipNullptrs() {
+			while (ptr != endPtr && *ptr == nullptr) {
+				ptr++;
+			}
+		}
+
+	public:
+		iterator(const wrapping_iterator& begin, const wrapping_iterator& end) : ptr(begin), endPtr(end) {
+			skipNullptrs();
+		}
+
+		iterator(const wrapping_iterator& end) : ptr(end) { }
+
+		reference operator* () const {
+			return **ptr;
+		}
+
+		pointer operator-> () const {
+			return *ptr;
+		}
+
+		self_type& operator++ () {
+			ptr++;
+
+			skipNullptrs();
+
+			return *this;
+		}
+
+		self_type& operator++(int junk) {
+			++(*this);
+			return *this;
+		}
+
+		bool operator== (const self_type& rhs) const {
+			return ptr == rhs.ptr;
+		}
+
+		bool operator!= (const self_type& rhs) const {
+			return ptr != rhs.ptr;
+		}
+	};
+
+	class const_iterator {
+		using wrapping_iterator = typename ChildrenContainer::const_iterator;
+
+		using self_type = const_iterator;
+		using value_type = TreeNode<DATA_T, CHILDREN_COUNT, PTR_T>;
+		using reference = value_type&;
+		using pointer = value_type*;
+		using iterator_category = std::forward_iterator_tag;
+		using difference_type = std::ptrdiff_t;
+
+		wrapping_iterator ptr;
+		wrapping_iterator endPtr;
+
+		void skipNullptrs() {
+			while (ptr != endPtr && *ptr == nullptr) {
+				ptr++;
+			}
+		}
+
+	public:
+		const_iterator(const wrapping_iterator& begin, const wrapping_iterator& end) : ptr(begin), endPtr(end) {
+			skipNullptrs();
+		}
+
+		const_iterator(const wrapping_iterator& end) : ptr(end) { }
+
+		const reference operator* () const {
+			return **ptr;
+		}
+
+		const pointer operator-> () const {
+			return *ptr;
+		}
+
+		self_type& operator++ () {
+			ptr++;
+
+			skipNullptrs();
+
+			return *this;
+		}
+
+		self_type& operator++(int junk) {
+			++(*this);
+			return *this;
+		}
+
+		bool operator== (const self_type& rhs) const {
+			return ptr == rhs.ptr;
+		}
+
+		bool operator!= (const self_type& rhs) const {
+			return ptr != rhs.ptr;
+		}
+	};
+
 	/**
 	 * @brief Default constructor
 	 */
@@ -84,7 +245,8 @@ public:
 
 		for (size_t i = 0; i < CHILDREN_COUNT; i++) {
 			if (copied.children[i] != nullptr) {
-				children[i] = std::make_unique<TreeNode>(*copied.children[i]);
+				std::unique_ptr<TreeNode> copy = std::make_unique<TreeNode>(*copied.children[i]);
+				children[i] = std::move(PTR_T<TreeNode>(copy.release()));
 			}
 		}
 
@@ -293,17 +455,34 @@ public:
 		return *children[n];
 	}
 
+	iterator begin() {
+		return iterator(children.begin(), children.end());
+	}
+
+	iterator end() {
+		return iterator(children.end());
+	}
+
+	const const_iterator begin() const {
+		return const_iterator(children.begin(), children.end());
+	}
+
+	const const_iterator end() const {
+		return const_iterator(children.end());
+	}
+
 	friend std::ostream& operator<< (std::ostream& os, const TreeNode& node) {
-		std::vector<bool> dashesStack;
-		node.print(os, 0, 0, 0, dashesStack);
+		node.print(os);
 		return os;
 	}
 };
 
 template <class DATA_T, template<class...> class PTR_T>
 class TreeNode<DATA_T, -1, PTR_T> {
+	using ChildrenContainer = std::vector<PTR_T<TreeNode>>;
+
 	TreeNode* parent;
-	std::vector<PTR_T<TreeNode>> children;
+	ChildrenContainer children;
 
 	DATA_T data;
 
@@ -317,41 +496,132 @@ class TreeNode<DATA_T, -1, PTR_T> {
 		return childrenCount;
 	}
 
-	void print(std::ostream& os, int childIndex, int anchestorAmount, int brotherAmount, std::vector<bool>& dashesStack) const {
-		if (anchestorAmount > 0) {
-			for (int i = 0; i < anchestorAmount - 1; i++) {
-				if (dashesStack[i]) {
-					os << "|   ";
-				}
-				else {
-					os << "    ";
-				}
-			}
-
-			// If the child index equals the amount of brothers, it means the child is listed last and thus a \ can be used.
-			if (childIndex == brotherAmount) {
-				os << "\\---";
-			}
-			else {
-				os << "|---";
-			}
-		}
-
-		os << data << '\n';
-
-		for (size_t i = 0; i < children.size(); i++) {
-			if (children[i] != nullptr) {
-				// This boolean toggles true when there are unprinted children remaining
-				bool unprintedChildrenRemaining = (i + 1) < children.size() && children[i + 1] != nullptr;
-
-				dashesStack.push_back(unprintedChildrenRemaining);
-				children[i]->print(os, i, anchestorAmount + 1, countChildren() - 1, dashesStack);
-				dashesStack.pop_back();
-			}
-		}
+	size_t getSlots() const {
+		return children.size();
 	}
 
+	void print(std::ostream& os) const {
+		std::vector<bool> dashesStack;
+		std::vector<const TreeNode*> visitedNodes;
+		TreePrinter<DATA_T, -1, PTR_T> printer(*this, dashesStack, visitedNodes);
+		printer.print(os, 0, 0, 0);
+	}
+
+	friend class TreePrinter<DATA_T, -1, PTR_T>;
+
 public:
+	class iterator {
+		using wrapping_iterator = typename ChildrenContainer::iterator;
+
+		using self_type = iterator;
+		using value_type = TreeNode<DATA_T, -1, PTR_T>;
+		using reference = value_type&;
+		using pointer = value_type*;
+		using iterator_category = std::forward_iterator_tag;
+		using difference_type = std::ptrdiff_t;
+
+		wrapping_iterator ptr;
+		wrapping_iterator endPtr;
+
+		void skipNullptrs() {
+			while (ptr != endPtr && *ptr == nullptr) {
+				ptr++;
+			}
+		}
+
+	public:
+		iterator(const wrapping_iterator& begin, const wrapping_iterator& end) : ptr(begin), endPtr(end) {
+			skipNullptrs();
+		}
+
+		iterator(const wrapping_iterator& end) : ptr(end) { }
+
+		reference operator* () const {
+			return **ptr;
+		}
+
+		pointer operator-> () const {
+			return *ptr;
+		}
+
+		self_type& operator++ () {
+			ptr++;
+
+			skipNullptrs();
+
+			return *this;
+		}
+
+		self_type& operator++(int junk) {
+			++(*this);
+			return *this;
+		}
+
+		bool operator== (const self_type& rhs) const {
+			return ptr == rhs.ptr;
+		}
+
+		bool operator!= (const self_type& rhs) const {
+			return ptr != rhs.ptr;
+		}
+	};
+
+	class const_iterator {
+		using wrapping_iterator = typename ChildrenContainer::const_iterator;
+
+		using self_type = const_iterator;
+		using value_type = TreeNode<DATA_T, -1, PTR_T>;
+		using reference = value_type&;
+		using pointer = value_type*;
+		using iterator_category = std::forward_iterator_tag;
+		using difference_type = std::ptrdiff_t;
+
+		wrapping_iterator ptr;
+		wrapping_iterator endPtr;
+
+		void skipNullptrs() {
+			while (ptr != endPtr && *ptr == nullptr) {
+				ptr++;
+			}
+		}
+
+	public:
+		const_iterator(const wrapping_iterator& begin, const wrapping_iterator& end) : ptr(begin), endPtr(end) {
+			skipNullptrs();
+		}
+
+		const_iterator(const wrapping_iterator& end) : ptr(end) { }
+
+		const reference operator* () const {
+			return **ptr;
+		}
+
+		const pointer operator-> () const {
+			return *ptr;
+		}
+
+		self_type& operator++ () {
+			ptr++;
+
+			skipNullptrs();
+
+			return *this;
+		}
+
+		self_type& operator++(int junk) {
+			++(*this);
+			return *this;
+		}
+
+		bool operator== (const self_type& rhs) const {
+			return ptr == rhs.ptr;
+		}
+
+		bool operator!= (const self_type& rhs) const {
+			return ptr != rhs.ptr;
+		}
+	};
+
 	/**
 	 * @brief Default constructor
 	 */
@@ -583,9 +853,24 @@ public:
 		return *children.at(n);
 	}
 
+	iterator begin() {
+		return iterator(children.begin(), children.end());
+	}
+
+	iterator end() {
+		return iterator(children.end());
+	}
+
+	const const_iterator begin() const {
+		return const_iterator(children.begin(), children.end());
+	}
+
+	const const_iterator end() const {
+		return const_iterator(children.end());
+	}
+
 	friend std::ostream& operator<< (std::ostream& os, const TreeNode& node) {
-		std::vector<bool> dashesStack;
-		node.print(os, 0, 0, 0, dashesStack);
+		node.print(os);
 		return os;
 	}
 };
