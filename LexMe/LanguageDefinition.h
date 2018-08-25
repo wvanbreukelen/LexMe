@@ -2,7 +2,6 @@
 
 #include <type_traits>
 #include "Operator.h"
-#include "OperatorMap.h"
 #include "SearchableMap.h"
 #include "Literal.h"
 #include "TypeDefinition.h"
@@ -52,13 +51,13 @@ namespace LanguageDefinition {
 	}
 
 	namespace Comments {
+		static constexpr char commentSingleLine = '#';
 		static constexpr char* multilineStart = "/**";
 		static constexpr char* multilineEnd = "**/";
 	}
 
 	namespace LanguageGeneral {
 		static constexpr char instructionEnd = ';';
-		static constexpr char commentSingleLine = '#';
 		static constexpr char stringQuote = '"';
 	}
 

@@ -2,7 +2,9 @@
 //
 
 #include "Lexer.h"
+#include "Operator.h"
 #include "TokenList.h"
+#include "TreeNode.h"
 
 int main()
 {
@@ -12,9 +14,6 @@ int main()
 
 	tokenList.print(std::cout);
 
-	getchar();
-	getchar();
-	
 	// Do something with the token list.
 
     return 0;

@@ -16,7 +16,7 @@ LexeralAnalysis::LexeralAnalysis() {
 	}
 	
 	// Then, do other (language dependend) special characters.
-	charClassifiers[LanguageDefinition::LanguageGeneral::commentSingleLine]  = CharacterType::COMMENT_SINGLE_LINE;
+	charClassifiers[LanguageDefinition::Comments::commentSingleLine]  = CharacterType::COMMENT_SINGLE_LINE;
 	charClassifiers[LanguageDefinition::LanguageGeneral::instructionEnd] = CharacterType::LINE_BREAK;
 	charClassifiers[LanguageDefinition::LanguageGeneral::stringQuote] = CharacterType::STR_QUOTE;
 
