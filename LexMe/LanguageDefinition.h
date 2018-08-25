@@ -30,20 +30,11 @@ namespace LanguageDefinition {
 		{"<=", 6}, // Comparison: larger-smaller-then
 	};
 
-
-
 	const Literal literalIdentifiers[]{
 		{"0x", TokenType::LITERAL_HEX },
 		{"0b", TokenType::LITERAL_BIN },
 		{"0o", TokenType::LITERAL_OCT }
 	};
-
-	// Define literals, like true
-	// Note that not all literals can be described, for example 6.02e23 or "music" cannot be described.
-	//const Literal languageLiterals[]{
-	//	{"true"},
-	//	{"false"}
-	//};
 
 	namespace Literals {
 		static constexpr char* literalTrue = "true";
