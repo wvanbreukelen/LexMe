@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include <vector>
 #include <array>
@@ -243,7 +243,7 @@ public:
 	TreeNode& operator= (const TreeNode& copied) {
 		data = copied.data;
 
-		for (size_t i = 0; i < CHILDREN_COUNT; i++) {
+		for (size_t i = 0; i < getSlots(); i++) {
 			if (copied.children[i] != nullptr) {
 				std::unique_ptr<TreeNode> copy = std::make_unique<TreeNode>(*copied.children[i]);
 				children[i] = std::move(PTR_T<TreeNode>(copy.release()));
@@ -325,7 +325,7 @@ public:
 	 * @return nullptr No node was matched
 	 */
 	TreeNode* findNode(const DATA_T& data) {
-		for (size_t i = 0; i < CHILDREN_COUNT; i++) {
+		for (size_t i = 0; i < getSlots(); i++) {
 			if (children[i] != nullptr && children[i]->getData() == data) {
 				return children[i];
 			}
@@ -347,7 +347,7 @@ public:
 	 * @return nullptr No node was matched
 	 */
 	TreeNode* findNodeRecursive(const DATA_T& data) {
-		for (size_t i = 0; i < CHILDREN_COUNT; i++) {
+		for (size_t i = 0; i < getSlots(); i++) {
 			if (children[i] != nullptr) {
 				if (children[i]->getData() == data) {
 					return children[i];
@@ -445,14 +445,14 @@ public:
 	 * @brief Returns true when a child is present at index n
 	 */
 	bool hasChild(size_t n) const {
-		return children[n] != nullptr;
+		return children.at(n) != nullptr;
 	}
 
 	/**
 	 * @brief Returns a reference to the child at index n
 	 */
 	TreeNode& getChild(size_t n) const {
-		return *children[n];
+		return *children.at(n);
 	}
 
 	iterator begin() {
