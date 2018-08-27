@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <vector>
 #include <array>
@@ -27,7 +27,6 @@ class TreePrinter {
 	}
 
 public:
-	TreePrinter(const TreeNode& treeNode) : treeNode(treeNode) { }
 	TreePrinter(const TreeNode& treeNode, std::vector<bool>& dashesStack, std::vector<const TreeNode*>& visitedNodes) : treeNode(treeNode), dashesStack(dashesStack), visitedNodes(visitedNodes) { }
 
 	void print(std::ostream& os, int childIndex, int anchestorAmount, int brotherAmount) {
