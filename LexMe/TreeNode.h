@@ -3,73 +3,6 @@
 #include <vector>
 #include <array>
 
-template <class DATA_T, int CHILDREN_COUNT, template<class...> class PTR_T>
-class TreeNode;
-
-template <class DATA_T, int CHILDREN_COUNT, template<class...> class PTR_T>
-class TreePrinter {
-	using TreeNode = TreeNode<DATA_T, CHILDREN_COUNT, PTR_T>;
-
-	std::vector<bool>& dashesStack;
-	std::vector<const TreeNode*>& visitedNodes;
-
-	const TreeNode& treeNode;
-
-	inline void printIdentation(std::ostream& os, int anchestorAmount, std::vector<bool>& dashesStack) const {
-		for (int i = 0; i < anchestorAmount - 1; i++) {
-			if (dashesStack[i]) {
-				os << "|   ";
-			}
-			else {
-				os << "    ";
-			}
-		}
-	}
-
-public:
-	TreePrinter(const TreeNode& treeNode, std::vector<bool>& dashesStack, std::vector<const TreeNode*>& visitedNodes) : treeNode(treeNode), dashesStack(dashesStack), visitedNodes(visitedNodes) { }
-
-	void print(std::ostream& os, int childIndex, int anchestorAmount, int brotherAmount) {
-		auto it = std::find(visitedNodes.begin(), visitedNodes.end(), &treeNode);
-
-		if (anchestorAmount > 0) {
-			printIdentation(os, anchestorAmount, dashesStack);
-
-			// If the child index equals the amount of brothers, it means the child is listed last and thus a \ can be used.
-			if (childIndex == brotherAmount) {
-				os << "\\---";
-			}
-			else {
-				os << "|---";
-			}
-		}
-
-		os << treeNode.data << '\n';
-
-		if (it != visitedNodes.end()) {
-			printIdentation(os, anchestorAmount, dashesStack);
-
-			os << "    \\---[...]" << std::endl;
-			return;
-		}
-
-		size_t i = 0;
-
-		for (const TreeNode& child : treeNode) {
-			// This boolean toggles true when there are unprinted children remaining
-			bool unprintedChildrenRemaining = (i + 1) < treeNode.getSlots() && treeNode.children[i + 1] != nullptr;
-
-			dashesStack.push_back(unprintedChildrenRemaining);
-			visitedNodes.push_back(&treeNode);
-			TreePrinter printer(child, dashesStack, visitedNodes);
-			printer.print(os, i, anchestorAmount + 1, treeNode.countChildren() - 1);
-			dashesStack.pop_back();
-
-			i++;
-		}
-	}
-};
-
 template <class DATA_T, int CHILDREN_COUNT = -1, template<class...> class PTR_T = std::unique_ptr>
 class TreeNode {
 	template <int CHILDREN_COUNT>
@@ -122,14 +55,27 @@ class TreeNode {
 		}
 	}
 
-	void print(std::ostream& os) const {
-		std::vector<bool> dashesStack;
-		std::vector<const TreeNode*> visitedNodes;
-		TreePrinter<DATA_T, CHILDREN_COUNT, PTR_T> printer(*this, dashesStack, visitedNodes);
-		printer.print(os, 0, 0, 0);
-	}
+	void print(std::ostream& os, std::string prefix, std::string childrenPrefix, std::vector<const TreeNode*>& visited) const {
+		auto it = std::find(visited.begin(), visited.end(), this);
 
-	friend class TreePrinter<DATA_T, CHILDREN_COUNT, PTR_T>;
+		if (it != visited.end()) {
+			std::cout << prefix << "[...]" << std::endl;
+			return;
+		}
+
+		os << prefix << data << std::endl;
+		visited.push_back(this);
+
+		for (size_t i = 1; i < getSlots(); i++) {
+			if (children.at(i - 1) != nullptr) {
+				children[i - 1]->print(os, childrenPrefix + "|---", childrenPrefix + "|   ", visited);
+			}
+		}
+
+		if (getSlots() > 0 && children.back() != nullptr) {
+			children.back()->print(os, childrenPrefix + "\\---", childrenPrefix + "    ", visited);
+		}
+	}
 
 public:
 	class iterator {
@@ -514,7 +460,8 @@ public:
 	}
 
 	friend std::ostream& operator<< (std::ostream& os, const TreeNode& node) {
-		node.print(os);
+		std::vector<const TreeNode*> visited;
+		node.print(os, "", "", visited);
 		return os;
 	}
 };
